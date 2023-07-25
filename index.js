@@ -25,20 +25,6 @@ app.get("/", async (req, res) => {
   res.render("index");
 });
 
-app.get(["/whois/:query", "/whois"], async (req, res, next) => {
-  let query = req.params.query || req.query.query;
-  if (!query) return res.render("result", { query, result: "Error: Bad Request" });
-  try {
-  //  if (cache[query]) return res.render("result", { query, result: cache[query] });
-    let result = (await whois(query, { follow: 0 })).trim();
-  //  cache[query] = result;
-    res.render("result", { query, result });
-  } catch (e) {
-    res.render("result", { query, result: "Error : " + e.message });
-    console.log(e);
-  }
-});
-
 app.get(['/api/whois/:query', '/api/whois'], async (req, res, next) => {
 res.type("text/plain");
 let query = req.params.query || req.query.query;
