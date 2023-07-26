@@ -14,18 +14,20 @@ function setLoadingState(loading) {
     lookupBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
   } else {
     lookupBtn.disabled = false;
-    lookupBtn.innerHTML = 'Lookup';
+    lookupBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Lookup';
   }
 }
 
 function performLookup() {
   const domain = domainInput.value.trim();
   if (!domain) return;
+  location.hash = `#${domain}`
 
   setLoadingState(true);
 
   fetch(`/api/whois/${domain}`)
   .then(response => {
+    if (response.status == 429) throw new Error("Rate limit reached, please try again later...");
     if (!response.ok) {
       throw new Error('Failed to fetch Whois data for the domain.');
     }
@@ -66,6 +68,7 @@ copyBtn.addEventListener('click', () => {
 });
 
 deleteBtn.addEventListener('click', () => {
+  location.hash = "";
   domainInput.value = '';
   resultContainer.classList.add('d-none');
 });
